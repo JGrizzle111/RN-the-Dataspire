@@ -8,6 +8,7 @@
     "scheme": "thedataspire",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "jsEngine": "jsc",
     "ios": {
       "supportsTablet": true
     },
@@ -32,6 +33,13 @@
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
+        }
+      ],
+      [
+        "expo-document-picker",
+        {
+          "iCloudContainerEnvironment": "Production",
+          "copyToCacheDirectory": true 
         }
       ]
     ],
