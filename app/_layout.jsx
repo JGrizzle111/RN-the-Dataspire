@@ -4,21 +4,21 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { initializeApp, getApps } from "firebase/app";
 import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-import fbConfig from "../config.js";
+import config from '../config.js';
 import { useEffect, useState } from 'react';
 import { Text, View, ActivityIndicator} from "react-native";
 
 export default function RootLayout() {
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState(null);
+  const [profileLoading, setProfileLoading] = useState(false);
   const router = useRouter();
   const segments = useSegments();
 
   useEffect(() => {
     // Initialize Firebase only once
     if (getApps().length === 0) {
-      const app = initializeApp(fbConfig);
-      // Initialize Auth with AsyncStorage persistence
+      const app = initializeApp(config);
       initializeAuth(app, {
         persistence: getReactNativePersistence(ReactNativeAsyncStorage)
       });
@@ -27,29 +27,46 @@ export default function RootLayout() {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       console.log('User state changed:', user);
-      setUser(user);
-      if (initializing) setInitializing(false);
+      console.log('Display name:', user?.displayName);
+      
+      // If user just signed up but no display name yet, wait a bit
+      if (user && !user.displayName && !profileLoading) {
+        setProfileLoading(true);
+        // Give some time for profile update to complete
+        setTimeout(() => {
+          user.reload().then(() => {
+            console.log('Reloaded user display name:', user.displayName);
+            setUser(user);
+            setProfileLoading(false);
+            if (initializing) setInitializing(false);
+          });
+        }, 1000);
+      } else {
+        setUser(user);
+        if (initializing) setInitializing(false);
+      }
     });
-    return unsubscribe; // unsubscribe on unmount
-  }, [initializing]);
+    return unsubscribe;
+  }, [initializing, profileLoading]);
 
   useEffect(() => {
-    if (initializing) return;
+    if (initializing || profileLoading) return;
     const inAuthGroup = segments[0] === "(auth)";
     const atRoot = segments.length === 0;
 
-    //console.log("user:", user, "segments:", segments, "inAuthGroup:", inAuthGroup, "atRoot:", atRoot);
-
     if (!user && (inAuthGroup || atRoot)) {
       router.replace("/Login");
-    } else if (user && (segments[0] === "Login" || atRoot)) { // Removed duplicate "Login" check
+    } else if (user && (segments[0] === "Login" || atRoot)) {
       router.replace("/(auth)/Home");
     }
-  }, [user, segments, initializing]);
+  }, [user, segments, initializing, profileLoading]);
 
-  if (initializing) return (
+  if (initializing || profileLoading) return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'black' }}>
       <ActivityIndicator size={'large'} style={{margin:28}}/>
+      <Text style={{color: 'white', marginTop: 10}}>
+        {profileLoading ? 'Updating profile...' : 'Loading...'}
+      </Text>
     </View>
   );
 

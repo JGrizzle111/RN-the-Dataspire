@@ -29,6 +29,9 @@ export default function Home(){
             <SafeAreaView style={styles.container}>
                 <View style={styles.welcomeContainer}>
                     <Text style={styles.title}>DATASPIRE ACCESS GRANTED</Text>
+                    <Text style={styles.subtitle}>
+                        Welcome, Adept {auth.currentUser?.displayName || "Unknown"}
+                    </Text>
                     <Text style={styles.quote}>
                         "Knowledge is power, guard it well."
                     </Text>
@@ -72,13 +75,7 @@ const styles = StyleSheet.create({
         borderColor: '#217736',
         borderWidth: 2,
         marginBottom: 30,
-        shadowColor: '#06972aff',
-        shadowOffset: {
-            width: 0,
-            height: 4,
-        },
-        shadowOpacity: 0.8,
-        shadowRadius: 8,
+        boxShadow: '0px 0px 10px rgba(6, 151, 42, 0.8)',
         elevation: 8,
     },
     title: {
@@ -88,6 +85,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 20,
         letterSpacing: 2,
+        textShadowColor: '#00ff00',
+        textShadowOffset: { width: 0, height: 0 },
+        textShadowRadius: 13,
     },
     subtitle: {
         fontSize: 16,
@@ -95,6 +95,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 10,
         fontWeight: 'bold',
+        textShadowColor: '#ffaa00',
+        textShadowOffset: { width: 0, height: 0 },
+        textShadowRadius: 13,
     },
     quote: {
         fontSize: 18,
@@ -103,6 +106,9 @@ const styles = StyleSheet.create({
         fontStyle: 'italic',
         marginBottom: 30,
         paddingHorizontal: 20,
+        textShadowColor: '#ffffff',
+        textShadowOffset: { width: 0, height: 0 },
+        textShadowRadius: 13,
     },
     greeting: {
         fontSize: 16,
@@ -111,13 +117,9 @@ const styles = StyleSheet.create({
         lineHeight: 24,
         marginBottom: 20,
         paddingHorizontal: 20,
-    },
-    warning: {
-        fontSize: 14,
-        color: '#ff6666',
-        textAlign: 'center',
-        fontWeight: 'bold',
-        marginTop: 20,
+        textShadowColor: '#cccccc',
+        textShadowOffset: { width: 0, height: 0 },
+        textShadowRadius: 13,
     },
     unauthorized: {
         fontSize: 14,
@@ -125,45 +127,36 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontWeight: 'bold',
         marginTop: 10,
+        textShadowColor: '#ff0000',
+        textShadowOffset: { width: 0, height: 0 },
+        textShadowRadius: 13,
     },
     button: {
         borderRadius: 10,
         padding: 12,
-        elevation: 2,
         marginTop: 10,
         width: 300,
-        alignSelf: 'center', // Changed from marginHorizontal: 'auto'
+        alignSelf: 'center',
         backgroundColor: 'green',
-        shadowColor: '#06972aff',
-        shadowOffset: {
-            width: 0,
-            height: 4,
-        },
-        shadowOpacity: 0.8,
-        shadowRadius: 8,
+        // Replace old shadow properties with boxShadow
+        boxShadow: '0px 0px 13px rgba(6, 151, 42, 0.8)',
         elevation: 8,
     },
     signOutButton: {
         borderRadius: 10,
         padding: 12,
-        elevation: 2,
-        marginTop: 40, // Removed duplicate marginTop
+        marginTop: 40,
         width: 200,
-        alignSelf: 'center', // Changed from marginHorizontal: 'auto'
+        alignSelf: 'center',
         backgroundColor: '#ff0000',
-        shadowColor: '#ff0000',
-        shadowOffset: {
-            width: 0,
-            height: 4,
-        },
-        shadowOpacity: 0.8,
-        shadowRadius: 8,
+        // Replace old shadow properties with boxShadow
+        boxShadow: '0px 0px 13px rgba(255, 0, 0, 0.8)',
         elevation: 8,
     },
     buttonTextStyle: {
         color: 'white',
         fontWeight: 'bold',
         textAlign: 'center',
-        fontSize:18
+        fontSize: 18
     },
 });

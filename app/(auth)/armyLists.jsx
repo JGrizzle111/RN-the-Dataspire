@@ -42,15 +42,8 @@ const styles = StyleSheet.create({
         borderColor: '#217736',
         borderWidth: 2,
         marginBottom: 30,
-        // Shadow properties for iOS
-        shadowColor: '#06972aff',
-        shadowOffset: {
-            width: 0,
-            height: 4,
-        },
-        shadowOpacity: 0.8,
-        shadowRadius: 8,
-        // Shadow property for Android
+        // Replace old shadow properties with boxShadow
+        boxShadow: '0px 0px 10px rgba(6, 151, 42, 0.8)',
         elevation: 8,
     },
     title: {
@@ -60,6 +53,9 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 20,
         letterSpacing: 2,
+        textShadowColor: '#00ff00',
+        textShadowOffset: { width: 0, height: 0 },
+        textShadowRadius: 8,
     },
     subtitle: {
         fontSize: 16,
@@ -67,77 +63,25 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 10,
         fontWeight: 'bold',
-    },
-    quote: {
-        fontSize: 18,
-        color: '#ffffff',
-        textAlign: 'center',
-        fontStyle: 'italic',
-        marginBottom: 30,
-        paddingHorizontal: 20,
-    },
-    greeting: {
-        fontSize: 16,
-        color: '#cccccc',
-        textAlign: 'center',
-        lineHeight: 24,
-        marginBottom: 20,
-        paddingHorizontal: 20,
-    },
-    warning: {
-        fontSize: 14,
-        color: '#ff6666',
-        textAlign: 'center',
-        fontWeight: 'bold',
-        marginTop: 20,
-    },
-    unauthorized: {
-        fontSize: 14,
-        color: '#ff0000',
-        textAlign: 'center',
-        fontWeight: 'bold',
-        marginTop: 10,
+        textShadowColor: '#ffaa00',
+        textShadowOffset: { width: 0, height: 0 },
+        textShadowRadius: 8,
     },
     button: {
         borderRadius: 10,
         padding: 12,
-        elevation: 2,
         marginTop: 10,
         width: 200,
         alignSelf: 'center',
         backgroundColor: 'green',
-        shadowColor: '#000000',
-        shadowOffset: {
-            width: 0,
-            height: 4,
-        },
-        shadowOpacity: 0.5,
-        shadowRadius: 8,
-        elevation: 8,
-    },
-    signOutButton: {
-        borderRadius: 10,
-        padding: 12,
-        elevation: 2,
-        marginTop: 10,
-        width: 200,
-        marginTop: 40,
-        marginHorizontal: 'auto',
-        backgroundColor: '#ff0000',
-        shadowColor: '#ff0000',
-        shadowOffset: {
-            width: 0,
-            height: 4,
-        },
-        shadowOpacity: 0.8,
-        shadowRadius: 8,
-        // Shadow property for Android
+        // Replace old shadow properties with boxShadow
+        boxShadow: '0px 4px 8px rgba(6, 151, 42, 0.8)',
         elevation: 8,
     },
     buttonTextStyle: {
         color: 'white',
         fontWeight: 'bold',
         textAlign: 'center',
-        fontSize:18
+        fontSize: 18
     },
 });
