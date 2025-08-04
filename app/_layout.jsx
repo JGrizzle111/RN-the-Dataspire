@@ -2,6 +2,8 @@ import { Stack, useRouter, useSegments } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { initializeApp, getApps } from "firebase/app";
+import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 import fbConfig from "../config.js";
 import { useEffect, useState } from 'react';
 import { Text, View, ActivityIndicator} from "react-native";
@@ -15,8 +17,13 @@ export default function RootLayout() {
   useEffect(() => {
     // Initialize Firebase only once
     if (getApps().length === 0) {
-      initializeApp(fbConfig);
+      const app = initializeApp(fbConfig);
+      // Initialize Auth with AsyncStorage persistence
+      initializeAuth(app, {
+        persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+      });
     }
+    
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       console.log('User state changed:', user);
@@ -31,11 +38,11 @@ export default function RootLayout() {
     const inAuthGroup = segments[0] === "(auth)";
     const atRoot = segments.length === 0;
 
-    console.log("user:", user, "segments:", segments, "inAuthGroup:", inAuthGroup, "atRoot:", atRoot);
+    //console.log("user:", user, "segments:", segments, "inAuthGroup:", inAuthGroup, "atRoot:", atRoot);
 
     if (!user && (inAuthGroup || atRoot)) {
-      router.replace("/Signup");
-    } else if (user && (segments[0] === "Signin" || segments[0] === "Signup" || atRoot)) {
+      router.replace("/Login");
+    } else if (user && (segments[0] === "Login" || atRoot)) { // Removed duplicate "Login" check
       router.replace("/(auth)/Home");
     }
   }, [user, segments, initializing]);
@@ -49,8 +56,9 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <Stack>
-        <Stack.Screen name="index" options={{ title: 'Welcome', headerShown: true}}/>
-        <Stack.Screen name="Signup" options={{ title: 'Sign Up', headerShown: true}}/>
+        <Stack.Screen name="index" options={{ title: 'Welcome', headerShown: false}}/>
+        <Stack.Screen name="Login" options={{ title: 'Log In', headerShown: false}}/>
+        <Stack.Screen name="(auth)" options={{headerShown: false}}/>
       </Stack>
     </SafeAreaProvider>
   );

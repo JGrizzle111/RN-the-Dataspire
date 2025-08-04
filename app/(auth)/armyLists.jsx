@@ -1,59 +1,29 @@
-import React, { useState } from 'react';
-import { Text, View, StyleSheet, Alert, Pressable, Modal, TextInput } from "react-native";
-import { getAuth, signOut } from 'firebase/auth';
+import { Text, StyleSheet, View, Pressable } from 'react-native'
+import React, { useCallback } from 'react'
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import { useRouter } from 'expo-router';
 
-export default function Home(){
-    const auth = getAuth();
+export default function ArmyLists() {
     const router = useRouter();
 
-    const handleSignOut = () => {
-        signOut(auth).then(() => {
-            Alert.alert("Sign Out", "You have been signed out successfully.");
-        }).catch((error) => {
-            Alert.alert("Sign Out Error", error.message);
-        });
-    };
-
-    const armyLists = () => {
-        router.push("/(auth)/armyLists");
-    }
-
-    const battlePlans = () => {
-        router.push("/(auth)/battlePlans");
-    }
+    const handleReturnHome = useCallback(() => {
+        router.replace("/(auth)/Home");
+    }, [router]);
 
     return (
         <SafeAreaProvider>
             <SafeAreaView style={styles.container}>
-                <View style={styles.welcomeContainer}>
-                    <Text style={styles.title}>DATASPIRE ACCESS GRANTED</Text>
-                    <Text style={styles.quote}>
-                        "Knowledge is power, guard it well."
-                    </Text>
-                    <Text style={styles.greeting}>
-                        Greetings, Adept. You have successfully authenticated your access to the sacred data-vaults of the Dataspire. The Machine Spirit acknowledges your presence.
-                    </Text>
-                    <Text style={styles.unauthorized}>
-                        {'>> WARNING: Unauthorized access is heresy punishable by servitorization <<'}
-                    </Text>
-                </View>
-                <View>
-                    <Pressable style={styles.button} onPress={armyLists}>
-                        <Text style={styles.buttonTextStyle}>Access Army Registers</Text>
-                    </Pressable>
-                    <Pressable style={styles.button} onPress={battlePlans}>
-                        <Text style={styles.buttonTextStyle}>Access Battlefield Planning</Text>
-                    </Pressable>
-                    <Pressable style={styles.signOutButton} onPress={handleSignOut}>
-                        <Text style={styles.buttonTextStyle}>Sign Out</Text>
+                <View style={styles.subContainer}>
+                    <Text style={styles.title}>REGISTERED ARMY ROSTERS</Text>
+                    <Text style={styles.subtitle}>Feature Coming Soon</Text>
+                    <Pressable style={styles.button} onPress={handleReturnHome}>
+                        <Text style={styles.buttonTextStyle}>Return Home</Text>
                     </Pressable>
                 </View>
             </SafeAreaView>
         </SafeAreaProvider>
     )
-};
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -63,7 +33,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 20,
     },
-    welcomeContainer: {
+    subContainer: {
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
@@ -72,6 +42,7 @@ const styles = StyleSheet.create({
         borderColor: '#217736',
         borderWidth: 2,
         marginBottom: 30,
+        // Shadow properties for iOS
         shadowColor: '#06972aff',
         shadowOffset: {
             width: 0,
@@ -79,6 +50,7 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.8,
         shadowRadius: 8,
+        // Shadow property for Android
         elevation: 8,
     },
     title: {
@@ -131,15 +103,15 @@ const styles = StyleSheet.create({
         padding: 12,
         elevation: 2,
         marginTop: 10,
-        width: 300,
-        alignSelf: 'center', // Changed from marginHorizontal: 'auto'
+        width: 200,
+        alignSelf: 'center',
         backgroundColor: 'green',
-        shadowColor: '#06972aff',
+        shadowColor: '#000000',
         shadowOffset: {
             width: 0,
             height: 4,
         },
-        shadowOpacity: 0.8,
+        shadowOpacity: 0.5,
         shadowRadius: 8,
         elevation: 8,
     },
@@ -147,9 +119,10 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 12,
         elevation: 2,
-        marginTop: 40, // Removed duplicate marginTop
+        marginTop: 10,
         width: 200,
-        alignSelf: 'center', // Changed from marginHorizontal: 'auto'
+        marginTop: 40,
+        marginHorizontal: 'auto',
         backgroundColor: '#ff0000',
         shadowColor: '#ff0000',
         shadowOffset: {
@@ -158,6 +131,7 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.8,
         shadowRadius: 8,
+        // Shadow property for Android
         elevation: 8,
     },
     buttonTextStyle: {

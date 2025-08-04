@@ -50,30 +50,44 @@ export default function Login() {
 
     return (
         <View style={styles.centeredView}>
-            <KeyboardAvoidingView behavior='padding'>
-                <Text style={styles.titleTextStyle}> Sign Up / Sign In</Text>
-                <TextInput 
-                    style={styles.input}
-                    value={email}
-                    onChangeText={setEmail}
-                    autoCapitalize='none'
-                    keyboardType='email-address'
-                    placeholder='Email'/>
-                <TextInput
-                    style={styles.input}
-                    value={password}
-                    onChangeText={setPassword}
-                    secureTextEntry
-                    placeholder='Password'/>
-                {loading ? (
-                    <ActivityIndicator size={'large'} style={{margin:28}}/>
-                ):(
-                    <>
-                        <Pressable style={styles.button} onPress={signUp} title="Sign Up"><Text style={styles.textStyle}>Sign Up</Text></Pressable>
-                        <Pressable style={styles.button} onPress={signIn} title="Sign In"><Text style={styles.textStyle}>Sign In</Text></Pressable>
-                    </>
-                )}
-            </KeyboardAvoidingView>
+            <View style={styles.loginContainer}>
+                <KeyboardAvoidingView behavior='padding'>
+                    <Text style={styles.titleTextStyle}>DATASPIRE ACCESS PROTOCOLS</Text>
+                    <Text style={styles.subtitle}>++ AUTHENTICATION REQUIRED ++</Text>
+                    <Text style={styles.flavorText}>
+                        "Only the faithful may access the sacred data-vaults"
+                    </Text>
+                    <Text style={styles.warningText}>
+                        Enter your sanctified credentials, Adept
+                    </Text>
+                    <TextInput 
+                        style={styles.input}
+                        value={email}
+                        onChangeText={setEmail}
+                        autoCapitalize='none'
+                        keyboardType='email-address'
+                        placeholder='Adept Designation (Email)'
+                        placeholderTextColor='#666'/>
+                    <TextInput
+                        style={styles.input}
+                        value={password}
+                        onChangeText={setPassword}
+                        secureTextEntry
+                        placeholder='Sacred Cipher (Password)'
+                        placeholderTextColor='#666'/>
+                    {loading ? (
+                        <ActivityIndicator size={'large'} style={{margin:28}}/>
+                    ):(
+                        <>
+                            <Pressable style={styles.button} onPress={signUp} title="Sign Up"><Text style={styles.textStyle}>Register New Adept</Text></Pressable>
+                            <Pressable style={styles.button} onPress={signIn} title="Sign In"><Text style={styles.textStyle}>Access Data-Vault</Text></Pressable>
+                        </>
+                    )}
+                    <Text style={styles.footerText}>
+                        {'>> The Emperor protects the faithful <<'}
+                    </Text>
+                </KeyboardAvoidingView>
+            </View>
         </View>
     )
 }
@@ -83,19 +97,37 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'black',
-        color: 'white'
+        backgroundColor: '#022004',
+        color: 'white',
+        padding: 20,
+    },
+    loginContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+        marginHorizontal: 20,
+        borderStyle: 'solid',
+        borderColor: '#217736',
+        borderWidth: 2,
+        shadowColor: '#06972aff',
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.5,
+        shadowRadius: 8,
+        elevation: 8,
     },
     modalView: {
         margin: 20,
-        backgroundColor: 'black',
+        backgroundColor: '#022004',
         borderRadius: 20,
         borderColor: 'green',
         padding: 35,
         height: 250,
         alignItems: 'center',
         justifyContent: 'center',
-        shadowColor: 'green',
+        shadowColor: '#06972aff',
         shadowOffset: {
             width: 0,
             height: 2,
@@ -111,6 +143,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         width: 275,
         backgroundColor: 'green',
+        alignSelf: 'center',
     },
     buttonOpen: {
         backgroundColor: 'green',
@@ -139,12 +172,46 @@ const styles = StyleSheet.create({
         marginVertical: 8,
         borderWidth: 1,
         borderColor: 'green',
+        alignSelf: 'center',
     },
     titleTextStyle: {
-        color: 'white',
-        fontSize: 32,
+        color: '#00ff00',
+        fontSize: 28,
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 10,
+        letterSpacing: 2,
+        textShadowColor: '#00ff00',
+        textShadowOffset: { width: 0, height: 2 },
+        textShadowRadius: 8,
+    },
+    subtitle: {
+        color: '#ffaa00',
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 15,
+        letterSpacing: 1,
+    },
+    flavorText: {
+        color: '#ffffff',
+        fontSize: 16,
+        fontStyle: 'italic',
+        textAlign: 'center',
+        marginBottom: 10,
+        paddingHorizontal: 20,
+    },
+    warningText: {
+        color: '#cccccc',
+        fontSize: 14,
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    footerText: {
+        color: '#ff6666',
+        fontSize: 12,
+        textAlign: 'center',
+        marginTop: 20,
+        fontWeight: 'bold',
     },
 });
