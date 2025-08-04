@@ -55,8 +55,8 @@ export default function RootLayout() {
     const atRoot = segments.length === 0;
 
     if (!user && (inAuthGroup || atRoot)) {
-      router.replace("/Login");
-    } else if (user && (segments[0] === "Login" || atRoot)) {
+      router.replace("/login");
+    } else if (user && (segments[0] === "login" || atRoot)) {
       router.replace("/(auth)/Home");
     }
   }, [user, segments, initializing, profileLoading]);
@@ -74,7 +74,8 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <Stack>
         <Stack.Screen name="index" options={{ title: 'Welcome', headerShown: false}}/>
-        <Stack.Screen name="Login" options={{ title: 'Log In', headerShown: false}}/>
+        <Stack.Screen name="login" options={{ title: 'Log In', headerShown: false}}/>
+        <Stack.Screen name="signup" options={{ title: 'Sign Up', headerShown: false}}/>
         <Stack.Screen name="(auth)" options={{headerShown: false}}/>
       </Stack>
     </SafeAreaProvider>

@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, Alert, Pressable, Modal, TextInput } from "reac
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
 import config from '../config.js';
 import { initializeApp } from 'firebase/app';
-import  Login from './Login.jsx';
+import  Login from './login.jsx';
 
 
 export default function Index() {

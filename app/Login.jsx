@@ -1,180 +1,150 @@
 import React, { useState } from 'react';
-import { Button, Text, View, StyleSheet, Alert, Pressable, Modal, TextInput, KeyboardAvoidingView, ActivityIndicator } from "react-native";
+import { Text, View, StyleSheet, Alert, Pressable, TextInput } from "react-native";
+import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { SafeAreaView, SafeAreaProvider } from "react-native-safe-area-context";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile} from 'firebase/auth';
-import { useEffect } from 'react';
-import { initializeApp, getApps } from 'firebase/app';
-import config from '../config.js';
-
+import { useRouter } from 'expo-router';
 
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const [displayName, setDisplayName] = useState('');
-
-    useEffect(() => {
-        // Initialize Firebase only once
-        if (getApps().length === 0) {
-            initializeApp(config);
-        }
-    }, []);
     
-    const signIn = async () => {
+    const auth = getAuth();
+    const router = useRouter();
+
+    const handleLogin = async () => {
+        if (!email || !password) {
+            Alert.alert("Validation Error", "Please enter both email and password.");
+            return;
+        }
+
         setLoading(true);
         try {
-            const auth = getAuth();
             await signInWithEmailAndPassword(auth, email, password);
-            Alert.alert('Sign In Successful');
-        } catch (e) {
-            Alert.alert('Sign in failed: ' + (e.message || e));
+            Alert.alert("Access Granted", "Welcome back, Adept!");
+            router.replace("/(auth)/Home");
+        } catch (error) {
+            let errorMessage = "Authentication failed. Please check your credentials.";
+            
+            switch (error.code) {
+                case 'auth/user-not-found':
+                    errorMessage = "No account found with this email. Please register first.";
+                    break;
+                case 'auth/wrong-password':
+                    errorMessage = "Incorrect password. Access denied.";
+                    break;
+                case 'auth/invalid-email':
+                    errorMessage = "Please enter a valid email address.";
+                    break;
+                case 'auth/too-many-requests':
+                    errorMessage = "Too many failed attempts. Please try again later.";
+                    break;
+            }
+            
+            Alert.alert("Authentication Error", errorMessage);
         } finally {
             setLoading(false);
         }
     };
 
-    const signUp = async () => {
-        if (!displayName.trim()) {
-            Alert.alert('Validation Error', 'Please enter your Adept name');
-            return;
-        }
-        
-        if (!email.trim() || !password.trim()) {
-            Alert.alert('Validation Error', 'Please fill in all fields');
-            return;
-        }
-        
-        setLoading(true);
-        try {
-            const auth = getAuth();
-            // Create the user account
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            
-            // Update the user's profile with the display name
-            await updateProfile(userCredential.user, {
-                displayName: displayName
-            });
-            
-            Alert.alert('Registration Successful', `Welcome, ${displayName}! Your account has been created.`);
-        } catch (e) {
-            console.log('Sign up failed:', e.code, e.message);
-            Alert.alert('Registration Failed', e.message || 'An error occurred during registration');
-        } finally {
-            setLoading(false);
-        }
+    const goToSignUp = () => {
+        router.push('/signup');
     };
 
     return (
-        <View style={styles.centeredView}>
-            <View style={styles.loginContainer}>
-                <KeyboardAvoidingView behavior='padding'>
-                    <Text style={styles.titleTextStyle}>DATASPIRE ACCESS PROTOCOLS</Text>
-                    <Text style={styles.subtitle}>++ AUTHENTICATION REQUIRED ++</Text>
-                    <Text style={styles.flavorText}>
-                        "Only the faithful may access the sacred data-vaults"
-                    </Text>
-                    <Text style={styles.warningText}>
-                        Enter your sanctified credentials, Adept
-                    </Text>
-                    <TextInput 
-                        style={styles.input}
-                        value={email}
-                        onChangeText={setEmail}
-                        autoCapitalize='none'
-                        keyboardType='email-address'
-                        placeholder='Adept Designation (Email)'
-                        placeholderTextColor='#666'/>
+        <SafeAreaProvider>
+            <SafeAreaView style={styles.container}>
+                <View style={styles.formContainer}>
+                    <Text style={styles.title}>DATASPIRE ACCESS REQUESTED</Text>
+                    <Text style={styles.subtitle}>Authenticate Your Credentials</Text>
+                    
                     <TextInput
                         style={styles.input}
+                        placeholder="Adept Designation (Email Address)"
+                        placeholderTextColor="#999"
+                        value={email}
+                        onChangeText={setEmail}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                    />
+                    
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Sacred Cipher (Password)"
+                        placeholderTextColor="#999"
                         value={password}
                         onChangeText={setPassword}
                         secureTextEntry
-                        placeholder='Sacred Cipher (Password)'
-                        placeholderTextColor='#666'/>
-                    <TextInput 
-                        style={styles.input}
-                        value={displayName}
-                        onChangeText={setDisplayName}
-                        autoCapitalize='none'
-                        placeholder='Adept Name'
-                        placeholderTextColor='#666'/>
-                    {loading ? (
-                        <ActivityIndicator size={'large'} style={{margin:28}}/>
-                    ):(
-                        <>
-                            <Pressable style={styles.button} onPress={signUp} title="Sign Up"><Text style={styles.textStyle}>Register New Adept</Text></Pressable>
-                            <Pressable style={styles.button} onPress={signIn} title="Sign In"><Text style={styles.textStyle}>Access Data-Vault</Text></Pressable>
-                        </>
-                    )}
-                    <Text style={styles.footerText}>
-                        {'>> The Emperor protects the faithful <<'}
+                    />
+                    
+                    <Pressable 
+                        style={[styles.button, loading && styles.buttonDisabled]} 
+                        onPress={handleLogin}
+                        disabled={loading}
+                    >
+                        <Text style={styles.buttonTextStyle}>
+                            {loading ? 'Authenticating...' : 'Access Dataspire'}
+                        </Text>
+                    </Pressable>
+                    
+                    <View style={styles.signupContainer}>
+                        <Text style={styles.signupText}>New to the Dataspire?</Text>
+                        <Pressable onPress={goToSignUp}>
+                            <Text style={styles.signupLink}>Register as an Adept</Text>
+                        </Pressable>
+                    </View>
+                    
+                    <Text style={styles.warning}>
+                        {'>> Knowledge is power, guard it well <<'}
                     </Text>
-                </KeyboardAvoidingView>
-            </View>
-        </View>
-    )
+                </View>
+            </SafeAreaView>
+        </SafeAreaProvider>
+    );
 }
 
 const styles = StyleSheet.create({
-    centeredView: {
+    container: {
         flex: 1,
         backgroundColor: '#022004',
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
     },
-    loginContainer: {
+    formContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 20,
+        padding: 30,
         marginHorizontal: 20,
         borderStyle: 'solid',
         borderColor: '#217736',
         borderWidth: 2,
-        marginBottom: 30,
-        // Replace old shadow properties with boxShadow
-        boxShadow: '0px 0px 10px rgba(6, 151, 42, 0.8)',
+        borderRadius: 10,
+        boxShadow: '0px 0px 15px rgba(6, 151, 42, 0.8)',
         elevation: 8,
+        width: '100%',
+        maxWidth: 400,
     },
-    titleTextStyle: {
+    title: {
         fontSize: 28,
         fontWeight: 'bold',
         color: '#00ff00',
         textAlign: 'center',
-        marginBottom: 20,
+        marginBottom: 10,
         letterSpacing: 2,
-        // Replace old textShadow properties with textShadow
-        textShadow: '0px 2px 8px #00ff00',
+        textShadowColor: '#00ff00',
+        textShadowOffset: { width: 0, height: 0 },
+        textShadowRadius: 8,
     },
     subtitle: {
         fontSize: 16,
         color: '#ffaa00',
         textAlign: 'center',
-        marginBottom: 10,
+        marginBottom: 30,
         fontWeight: 'bold',
-    },
-    flavorText: {
-        fontSize: 18,
-        color: '#ffffff',
-        textAlign: 'center',
-        fontStyle: 'italic',
-        marginBottom: 20,
-        paddingHorizontal: 20,
-    },
-    warningText: {
-        fontSize: 16,
-        color: '#cccccc',
-        textAlign: 'center',
-        marginBottom: 20,
-        paddingHorizontal: 20,
-    },
-    footerText: {
-        fontSize: 14,
-        color: '#ff0000',
-        textAlign: 'center',
-        fontWeight: 'bold',
-        fontStyle: 'italic',
-        marginTop: 20,
+        textShadowColor: '#ffaa00',
+        textShadowOffset: { width: 0, height: 0 },
+        textShadowRadius: 8,
     },
     input: {
         borderWidth: 1,
@@ -182,26 +152,61 @@ const styles = StyleSheet.create({
         backgroundColor: '#0a3a0a',
         color: '#ffffff',
         borderRadius: 10,
-        padding: 12,
-        marginTop: 10,
-        width: 300,
-        alignSelf: 'center',
+        padding: 15,
+        marginBottom: 15,
+        width: '100%',
+        fontSize: 16,
+        boxShadow: '0px 0px 15px rgba(6, 151, 42, 0.8)',
     },
     button: {
         borderRadius: 10,
-        padding: 12,
-        marginTop: 15,
-        width: 300,
-        alignSelf: 'center',
+        padding: 15,
+        marginTop: 10,
+        width: '100%',
         backgroundColor: 'green',
-        // Replace old shadow properties with boxShadow
-        boxShadow: '0px 4px 8px rgba(6, 151, 42, 0.8)',
+        boxShadow: '0px 0px 8px rgba(6, 151, 42, 0.8)',
         elevation: 8,
     },
-    textStyle: {
+    buttonDisabled: {
+        backgroundColor: '#666',
+        opacity: 0.6,
+    },
+    buttonTextStyle: {
         color: 'white',
         fontWeight: 'bold',
         textAlign: 'center',
-        fontSize: 18
+        fontSize: 18,
+    },
+    signupContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 20,
+        gap: 5,
+    },
+    signupText: {
+        color: '#cccccc',
+        fontSize: 16,
+        textShadowColor: '#cccccc',
+        textShadowOffset: { width: 0, height: 0 },
+        textShadowRadius: 8,
+    },
+    signupLink: {
+        color: '#00ff00',
+        fontSize: 16,
+        fontWeight: 'bold',
+        textDecorationLine: 'underline',
+        textShadowColor: '#00ff00',
+        textShadowOffset: { width: 0, height: 0 },
+        textShadowRadius: 8,
+    },
+    warning: {
+        fontSize: 12,
+        color: '#ff0000',
+        textAlign: 'center',
+        fontWeight: 'bold',
+        marginTop: 20,
+        textShadowColor: '#ff0000',
+        textShadowOffset: { width: 0, height: 0 },
+        textShadowRadius: 8,
     },
 });
